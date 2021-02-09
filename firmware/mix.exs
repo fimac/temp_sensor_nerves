@@ -36,7 +36,6 @@ defmodule Firmware.MixProject do
       {:ring_logger, "~> 0.8.1"},
       {:toolshed, "~> 0.2.13"},
       {:ui, path: "../ui", targets: @all_targets, env: Mix.env()},
-      {:bmp280, "~> 0.2.2"},
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.11.3", targets: @all_targets},

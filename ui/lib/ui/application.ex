@@ -12,9 +12,15 @@ defmodule Ui.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Ui.PubSub},
       # Start the Endpoint (http/https)
-      UiWeb.Endpoint
+      UiWeb.Endpoint,
       # Start a worker by calling: Ui.Worker.start_link(arg)
       # {Ui.Worker, arg}
+
+      # Supervise Sensor Genserver
+      Ui.Sensor,
+
+      # Supervise Sensor data Genserver
+      Ui.SensorData
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
