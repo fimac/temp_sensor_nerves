@@ -1,0 +1,29 @@
+<section>
+  <%= if Map.has_key?(@temp, :temperature_c) do %>
+    <div class="reading">
+      <div class="temp-data">
+        <h2>Temperature</h2>
+        <p><%= @temp.temperature_c |> Decimal.from_float() |> Decimal.round(2) |> Decimal.to_string() %> &#8451;</p>
+      </div>
+      <div class="temp-data">
+        <h2>Altitude</h2>
+        <p><%= @temp.altitude_m |> Decimal.from_float() |> Decimal.round(2) |> Decimal.to_string() %> m</p>
+      </div>
+      <div class="temp-data">
+        <h2>Dew Point</h2>
+        <p><%= @temp.dew_point_c |> Decimal.from_float() |> Decimal.round(2) |> Decimal.to_string() %> &#8451;
+        </p>
+      </div>
+      <div class="temp-data">
+        <h2>Humidity</h2>
+        <p><%= @temp.humidity_rh |> Decimal.from_float() |> Decimal.round(2) |> Decimal.to_string() %> rh
+        </p>
+      </div>
+      <div class="temp-data">
+        <h2>Pressure</h2>
+        <p><%= @temp.pressure_pa |> Decimal.from_float() |> Decimal.round(2) |> Decimal.to_string() %> pa
+        </p>
+      </div>
+    </div>
+  <%end %>
+</section>
