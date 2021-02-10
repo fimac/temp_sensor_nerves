@@ -27,9 +27,11 @@ defmodule UiWeb.PageLive do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :tick, 8000)
-    # TODO: Handle if error returned
+
     %{queue: {head, tail}} = SensorData.read_data()
+
     data = List.flatten([head | tail])
+
     {:ok, assign(socket, temp_data: data)}
   end
 
@@ -37,7 +39,7 @@ defmodule UiWeb.PageLive do
   @impl true
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 8000)
-    # TODO: Handle error
+
     %{queue: {head, tail}} = SensorData.read_data()
 
     data = List.flatten([head | tail])

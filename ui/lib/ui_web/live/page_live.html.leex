@@ -3,8 +3,7 @@
   <%= for t <- @temp_data do %>
     <div class="reading">
       <div class="temp-data">
-        <p><%= t.temp %> &#8451;</p>
-        <p><%= t.timestamp %></p>
+        <p><span>Timestamp: <%=t.timestamp %></span> <span>Temp: <%= t.temp %> &#8451;</span></p>
       </div>
     </div>
   <% end %>

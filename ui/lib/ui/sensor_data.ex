@@ -4,7 +4,6 @@ defmodule Ui.SensorData do
 
   Functionality to save temp data to a queue and read from queue.
 
-  TODO: Implement some sort of retention policy.
   """
 
   use GenServer
@@ -17,16 +16,15 @@ defmodule Ui.SensorData do
   end
 
   @impl true
-  # Callback fn, setting the initial state with a 0 reading and the current system time.
+  # Callback fn, setting the initial state with a map that has a queue and a counter
   def init(_state) do
     # Setup queue data structure {[], []}
     queue = :queue.new
-    # TODO: Counter to keep length of queue. When counter get's to x remove oldest item from queue.
-    # :queue.out(queue)
-    # count = 0
+    # Count to keep track of length of queue.
+    count = 0
 
     # %{queue: {[], []}}, count: 0}
-    initial_state = %{queue: queue}
+    initial_state = %{queue: queue, count: count}
 
     {:ok, initial_state}
   end
@@ -39,13 +37,18 @@ defmodule Ui.SensorData do
     GenServer.call(__MODULE__, {:read_data})
   end
 
+  # if count is greater than 10, queue out, then queue in.
+
   @impl true
-  def handle_cast({:add_data,  %BMP280.Measurement{temperature_c: temp}}, %{queue: queue}) do
+  def handle_cast({:add_data,  %BMP280.Measurement{temperature_c: temp}}, %{queue: queue, count: count}) do
     current_time = :os.system_time(:second)
     temp_data = %{temp: temp, timestamp: current_time}
-    new_queue = :queue.in(temp_data, queue)
 
-    new_state = %{queue: new_queue}
+    new_count = handle_count(count)
+
+    new_queue = handle_queue(queue, new_count, temp_data)
+
+    new_state = %{queue: new_queue, count: new_count}
 
     {:noreply, new_state}
   end
@@ -53,5 +56,24 @@ defmodule Ui.SensorData do
   @impl true
   def handle_call({:read_data}, _, state) do
     {:reply, state, state}
+  end
+
+  defp handle_queue(queue, count, temp_data) when count > 10 do
+    # remove tail item
+    {{:value, _}, q} = :queue.out(queue)
+    # return new queue with item added
+    :queue.in(temp_data, q)
+  end
+
+  defp handle_queue(queue, _count, temp_data) do
+    :queue.in(temp_data, queue)
+  end
+
+  defp handle_count(count) when count <= 15 do
+    count + 1
+  end
+
+  defp handle_count(count) do
+    count
   end
 end
