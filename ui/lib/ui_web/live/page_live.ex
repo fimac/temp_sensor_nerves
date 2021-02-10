@@ -27,7 +27,7 @@ defmodule UiWeb.PageLive do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :tick, 8000)
-
+    # TODO: Update to pubsub. Instead of reading at intervals.
     %{queue: {head, tail}} = SensorData.read_data()
 
     data = List.flatten([head | tail])

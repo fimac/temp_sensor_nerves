@@ -20,7 +20,7 @@ defmodule Ui.Sensor do
     # Start sensor process
     {:ok, sensor} = BMP280.start_link(bus_name: "i2c-1", bus_address: 0x77)
     # Open port 26 on pi.
-    {:ok, alert_port} = Circuits.GPIO.open(26, :output)
+    {:ok, alert_port} = Circuits.GPIO.open(18, :output)
     # Kick off process to read every 5 seconds
     read_sensor()
 
@@ -29,7 +29,7 @@ defmodule Ui.Sensor do
 
   @impl true
   def handle_info(:read, %{sensor: sensor, alert_port: alert_port} = state) do
-    # TODO: handle if error returned.
+    # TODO: handle if error returned. {:error, :i2c_nak}
     {:ok, %{temperature_c: temp_data} = temp} =  BMP280.read(sensor)
     # iex> BMP280.read(bmp)
     # {:ok,
@@ -42,13 +42,20 @@ defmodule Ui.Sensor do
     #  }}
 
 
-    # # If alert port is off and over max temp, turn PORT ON
-    if temp_data > 22.00 and Circuits.GPIO.read(alert_port) == 0, do: Circuits.GPIO.write(alert_port, 1)
-    # # If alert port is on and under max temp, turn PORT OFF
-    if temp_data < 22.00 and Circuits.GPIO.read(alert_port) == 1, do: Circuits.GPIO.write(alert_port, 0)
+    # # When max temp is reached, turn PORT OFF
+    if temp_data > 21.00 do
+      Logger.info("#{temp_data} ---- temp data > 21.00")
+      Circuits.GPIO.write(alert_port, 0)
+    end
+    # # When under max temp, turn PORT ON
+    if temp_data < 21.00 do
+      Logger.info("#{temp_data} ---- temp data < 21.00")
+      Circuits.GPIO.write(alert_port, 1)
+    end
 
     # call sensor_data genserver cast to update sensor data state async
     SensorData.add_data(temp)
+    # TODO: Update to publish message using phoenix pubsub.
 
     # make call to read sensor again
     read_sensor()
