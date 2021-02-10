@@ -4,6 +4,7 @@ defmodule Ui.SensorData do
 
   Functionality to save temp data to a queue and read from queue.
 
+  Retains the last 10 readings in memory.
   """
 
   use GenServer

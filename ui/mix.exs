@@ -45,7 +45,8 @@ defmodule Ui.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:bmp280, "~> 0.2.2"},
-      {:decimal, "~> 2.0"}
+      {:decimal, "~> 2.0"},
+      {:circuits_gpio, "~> 0.4"}
     ]
   end
 
