@@ -2,10 +2,13 @@ defmodule Ui.Sensor do
   alias Ui.SensorData
 
   use GenServer
+  require Logger
 
   # Start genserver
   def start_link(_state) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    {:ok, pid} = GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    Logger.info("#{inspect(pid)} sensor server started ########")
+    {:ok, pid}
   end
 
   # Indicates this is a callback
@@ -35,7 +38,7 @@ defmodule Ui.Sensor do
     #    temperature_c: 29.444089211523533
     #  }}
 
-    # call sensor_data genserver cast call to update sensor data state async
+    # call sensor_data genserver cast to update sensor data state async
     SensorData.add_data(temp)
 
     # make call to read sensor again

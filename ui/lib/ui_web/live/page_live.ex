@@ -1,6 +1,8 @@
 defmodule UiWeb.PageLive do
   use UiWeb, :live_view
 
+  require Logger
+
   alias Ui.SensorData
 
   # Initial implementation, start read process on page load
@@ -26,8 +28,9 @@ defmodule UiWeb.PageLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :tick, 8000)
     # TODO: Handle if error returned
-    temp_data = SensorData.read_data()
-    {:ok, assign(socket, temp_data: temp_data)}
+    %{queue: {head, tail}} = SensorData.read_data()
+    data = List.flatten([head | tail])
+    {:ok, assign(socket, temp_data: data)}
   end
 
 
@@ -35,8 +38,10 @@ defmodule UiWeb.PageLive do
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 8000)
     # TODO: Handle error
-    temp_data = SensorData.read_data()
+    %{queue: {head, tail}} = SensorData.read_data()
 
-    {:noreply, assign(socket, temp_data: temp_data)}
+    data = List.flatten([head | tail])
+
+    {:noreply, assign(socket, temp_data: data)}
   end
 end

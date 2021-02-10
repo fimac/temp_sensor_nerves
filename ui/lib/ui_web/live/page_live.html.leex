@@ -1,11 +1,11 @@
 <section>
-  <%= for data <- @temp_data do %>
+  <h2>Temperature Reading</h2>
+  <%= for t <- @temp_data do %>
     <div class="reading">
       <div class="temp-data">
-        <h2>Temperature</h2>
-        <p><%= data.temp %> &#8451;</p>
-        <p><%= data.timestamp %></p>
+        <p><%= t.temp %> &#8451;</p>
+        <p><%= t.timestamp %></p>
       </div>
     </div>
-  <%end %>
+  <% end %>
 </section>

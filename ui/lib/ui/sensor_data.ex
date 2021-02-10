@@ -1,22 +1,32 @@
 defmodule Ui.SensorData do
+  @doc """
+  Genserver to manage the state of the sensor data. Currently storing in memory.
+
+  Functionality to save temp data to a queue and read from queue.
+
+  TODO: Implement some sort of retention policy.
+  """
 
   use GenServer
+  require Logger
 
-  def start_link(state \\ []) do
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  def start_link(state \\ %{}) do
+    {:ok, pid} = GenServer.start_link(__MODULE__, state, name: __MODULE__)
+    Logger.info("#{inspect(pid)} sensor data started #########")
+    {:ok, pid}
   end
 
   @impl true
   # Callback fn, setting the initial state with a 0 reading and the current system time.
-  def init(state) do
-    # use Erlang fn to get current system time as unix timestamp
-    current_time = :os.system_time(:second)
+  def init(_state) do
+    # Setup queue data structure {[], []}
+    queue = :queue.new
+    # TODO: Counter to keep length of queue. When counter get's to x remove oldest item from queue.
+    # :queue.out(queue)
+    # count = 0
 
-    initial_temp_data = %{temp: 0, timestamp: current_time}
-
-    # TODO: Implement as a queue, could use Erlang queue data structure.
-    # TODO: How to manage data stored in memory, how long to retain data.
-    initial_state = [initial_temp_data | state]
+    # %{queue: {[], []}}, count: 0}
+    initial_state = %{queue: queue}
 
     {:ok, initial_state}
   end
@@ -30,11 +40,12 @@ defmodule Ui.SensorData do
   end
 
   @impl true
-  def handle_cast({:add_data,  %BMP280.Measurement{temperature_c: temp}}, state) do
+  def handle_cast({:add_data,  %BMP280.Measurement{temperature_c: temp}}, %{queue: queue}) do
     current_time = :os.system_time(:second)
     temp_data = %{temp: temp, timestamp: current_time}
-    # add temp data to head of list
-    new_state = [temp_data | state]
+    new_queue = :queue.in(temp_data, queue)
+
+    new_state = %{queue: new_queue}
 
     {:noreply, new_state}
   end
