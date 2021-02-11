@@ -31,15 +31,6 @@ defmodule Ui.Sensor do
   def handle_info(:read, %{sensor: sensor, alert_port: alert_port} = state) do
     # TODO: handle if error returned. {:error, :i2c_nak}
     {:ok, %{temperature_c: temp_data} = temp} =  BMP280.read(sensor)
-    # iex> BMP280.read(bmp)
-    # {:ok,
-    #  %BMP280.Measurement{
-    #    altitude_m: 13.842046523689644,
-    #    dew_point_c: 18.438691684856007,
-    #    humidity_rh: 51.59938493850065,
-    #    pressure_pa: 99836.02154563366,
-    #    temperature_c: 29.444089211523533
-    #  }}
 
 
     # # When max temp is reached, turn PORT OFF
