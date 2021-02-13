@@ -54,14 +54,12 @@ defmodule Ui.Sensor do
   defp handle_sensor_read({:ok, %{temperature_c: temp_data} = temp}, _, alert_port) when temp_data > 23.00 do
      Logger.info("#{temp_data} ---- temp data > 23.00")
      Circuits.GPIO.write(alert_port, 0)
-     # TODO: Update to publish message using phoenix pubsub.
      SensorData.add_data(temp)
   end
 
   defp handle_sensor_read({:ok, %{temperature_c: temp_data} = temp}, _, alert_port) when temp_data < 23.00 do
      Logger.info("#{temp_data} ---- temp data < 23.00")
      Circuits.GPIO.write(alert_port, 1)
-     # TODO: Update to publish message using phoenix pubsub.
      SensorData.add_data(temp)
   end
 end

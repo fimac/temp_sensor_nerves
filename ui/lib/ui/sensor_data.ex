@@ -51,6 +51,9 @@ defmodule Ui.SensorData do
 
     new_state = %{queue: new_queue, count: new_count}
 
+    # Broadcast new state
+    Phoenix.PubSub.broadcast(Ui.PubSub, "sensor_reading", new_state)
+
     {:noreply, new_state}
   end
 

@@ -20,7 +20,7 @@ defmodule Ui.Application do
       Ui.Sensor,
 
       # Supervise Sensor data Genserver
-      Ui.SensorData
+      Ui.SensorData,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
