@@ -2,6 +2,9 @@
   <div class="reading">
     <h2>Temperature Reading</h2>
   </div>
+  <div>
+    <%= make_red_plot(@test_data) %>
+  </div>
   <%= for t <- @temp_data do %>
     <div class="reading">
       <div class="temp-data">
@@ -9,4 +12,7 @@
       </div>
     </div>
   <% end %>
+
+
+
 </section>
