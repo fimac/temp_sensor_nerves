@@ -51,6 +51,17 @@ defmodule Ui.SensorData do
 
     new_state = %{queue: new_queue, count: new_count}
 
+    # Send data to influxDB
+    # TODO: setup separate service to handle api?
+    # TODO: remove hardcoding
+    token = Application.get_env(:influx, :token)
+    url = ""
+    headers = ["Authorization": "Token #{token}", "Content-Type": "raw"]
+    # "temp,host=pi1 temp=35.43234543 1613217504"
+    body = "temp,host=pi1 temp=#{temp_data.temp} #{temp_data.timestamp}"
+
+    HTTPoison.post(url, body, headers)
+
     # Broadcast new state
     Phoenix.PubSub.broadcast(Ui.PubSub, "sensor_reading", new_state)
 

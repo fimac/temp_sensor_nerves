@@ -47,7 +47,8 @@ defmodule Ui.MixProject do
       {:bmp280, "~> 0.2.2"},
       {:decimal, "~> 2.0"},
       {:circuits_gpio, "~> 0.4"},
-      {:contex, "~> 0.3.0"}
+      {:contex, "~> 0.3.0"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
