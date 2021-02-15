@@ -21,7 +21,10 @@ config :nerves, :firmware, rootfs_overlay: "rootfs_overlay"
 config :nerves, source_date_epoch: "1591379755"
 
 # influx db config
-config :influx, token: System.get_env("INFLUX_TOKEN")
+config :firmware, influx_token: System.get_env("INFLUX_TOKEN")
+config :firmware, local_host_ip: System.get_env("LOCAL_HOST_IP")
+config :firmware, influx_org: System.get_env("INFLUX_ORG")
+config :firmware, influx_bucket: System.get_env("INFLUX_BUCKET")
 
 # Use Ringlogger as the logger backend and remove :console.
 # See https://hexdocs.pm/ring_logger/readme.html for more information on

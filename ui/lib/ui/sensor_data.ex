@@ -52,14 +52,17 @@ defmodule Ui.SensorData do
     new_state = %{queue: new_queue, count: new_count}
 
     # Send data to influxDB
-    # TODO: setup separate service to handle api?
-    # TODO: remove hardcoding
-    token = Application.get_env(:influx, :token)
-    url = ""
-    headers = ["Authorization": "Token #{token}", "Content-Type": "raw"]
-    # "temp,host=pi1 temp=35.43234543 1613217504"
-    body = "temp,host=pi1 temp=#{temp_data.temp} #{temp_data.timestamp}"
+    token = Application.get_env(:firmware, :influx_token)
+    local_host_ip = Application.get_env(:firmware, :local_host_ip)
+    influx_org = Application.get_env(:firmware, :influx_org)
+    influx_bucket = Application.get_env(:firmware, :influx_bucket)
 
+    url = "http://#{local_host_ip}:8086/api/v2/write?org=#{influx_org}&bucket=#{influx_bucket}&precision=s"
+
+    headers = ["Authorization": "Token #{token}", "Content-Type": "raw"]
+    # eg "temp,host=pi1 temp=35.43234543 1613217504"
+    body = "temp,host=pi1 temp=#{temp_data.temp} #{temp_data.timestamp}"
+    # TODO - Handle response
     HTTPoison.post(url, body, headers)
 
     # Broadcast new state
