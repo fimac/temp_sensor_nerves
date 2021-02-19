@@ -51,7 +51,8 @@ defmodule Ui.SensorData do
 
     new_state = %{queue: new_queue, count: new_count}
 
-    # Send data to influxDB
+    # Send data to influxDB,
+    # TODO: update to UI config and import into firmware.
     token = Application.get_env(:firmware, :influx_token)
     local_host_ip = Application.get_env(:firmware, :local_host_ip)
     influx_org = Application.get_env(:firmware, :influx_org)
@@ -61,6 +62,7 @@ defmodule Ui.SensorData do
 
     headers = ["Authorization": "Token #{token}", "Content-Type": "raw"]
     # eg "temp,host=pi1 temp=35.43234543 1613217504"
+    # measurement,tagKeys=tagValue field timestamp
     body = "temp,host=pi1 temp=#{temp_data.temp} #{temp_data.timestamp}"
     # TODO - Handle response
     HTTPoison.post(url, body, headers)

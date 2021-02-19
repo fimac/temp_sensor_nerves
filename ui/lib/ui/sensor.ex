@@ -62,4 +62,9 @@ defmodule Ui.Sensor do
      Circuits.GPIO.write(alert_port, 1)
      SensorData.add_data(temp)
   end
+
+  defp handle_sensor_read(_, _, _) do
+    Logger.info("Error reading because of bad arguments recevied")
+    {:error, :bad_arg}
+  end
 end
